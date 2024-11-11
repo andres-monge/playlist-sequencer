@@ -13,7 +13,7 @@ def optimize_playlist(playlist_data):
     # Sort by opt_score in descending order
     return playlist_data.sort_values(by='opt_score', ascending=False)
 
-st.title("Playlist Optimizer")
+st.title("Playlist Sequencer")
 
 uploaded_file = st.file_uploader("Upload your playlist CSV file", type="csv")
 if uploaded_file is not None:
