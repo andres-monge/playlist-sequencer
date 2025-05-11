@@ -8,7 +8,9 @@ def optimize_playlist(playlist_data):
     
     # Calculate discoveryRate and opt_score
     playlist_data['discoveryRate'] = playlist_data['likeRate'] + playlist_data['saveRate']
-    playlist_data['opt_score'] = playlist_data['discoveryRate'] * (1 - playlist_data['skipRate'])
+    # Add a small value to skip_rate to avoid division by zero, and cap it at 1
+    playlist_data['skipRate'] = playlist_data['skipRate'].clip(0.01, 1)
+    playlist_data['opt_score'] = playlist_data['discoveryRate'] / playlist_data['skipRate']
     
     # Add opt_score_percentage column
     playlist_data['opt_score_percentage'] = (playlist_data['opt_score'] * 100).round(2).astype(str) + '%'
