@@ -102,7 +102,7 @@ if uploaded_file is not None:
             const btnText = document.getElementById('btnText');
             
             navigator.clipboard.writeText(trackData).then(() => {{
-                btnText.textContent = 'Paste me in Pacman';
+                btnText.textContent = 'Copied';
                 
                 setTimeout(() => {{
                     btnText.textContent = 'Copy All Track URIs';
