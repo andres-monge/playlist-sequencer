@@ -1,7 +1,7 @@
 ---
 title: Migrate Playlist Sequencer from Streamlit to Snow SPA
 type: feat
-status: active
+status: completed
 date: 2026-04-28
 deepened: 2026-04-28
 origin: docs/brainstorms/2026-04-28-streamlit-to-snow-migration-requirements.md
