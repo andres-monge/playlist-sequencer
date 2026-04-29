@@ -2,57 +2,38 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## ⚠️ This is the legacy Streamlit repo. Active code lives elsewhere.
 
-This is a Python Streamlit application called "Playlist Sequencer" that analyzes and optimizes music playlists based on engagement metrics. The app takes CSV files containing playlist data and reorders tracks by calculating scores based on like rates, save rates, and skip rates.
+The playlist-sequencer was migrated from this Streamlit app to a pure-static Snow SPA in early 2026. **`app.py` is now a redirect stub** that points users at the Snow SPA URL.
 
-## Development Commands
+**Active code:** `~/Documents/Cursor Projects/playlist-sequencer-snow/`
+**Production URL:** https://snow.spotify.net/spa/playlist-sequencer
+**Why we migrated:** Streamlit's Edge Proxy + Okta + DI path was too bureaucratic for a small internal tool. See `docs/2026-04-28-migrate-to-snow-spa-plan.md` for the migration plan.
 
-### Running the Application
-```bash
-streamlit run app.py
-```
+Almost all changes belong in the Snow SPA repo, not here. This repo exists only because:
 
-### Installing Dependencies
-```bash
-pip install -r requirements.txt
-```
+- It hosts the redirect stub at the original Streamlit URL until that link is eradicated from internal docs/bookmarks.
+- It preserves git history of the pre-migration Streamlit implementation.
 
-### Development Container
-The project includes a devcontainer configuration that:
-- Uses Python 3.11 base image
-- Auto-installs requirements and streamlit
-- Runs the app on port 8501 after container startup
-- Opens with README.md and app.py files
+## When you might still touch this repo
 
-## Architecture
+- The Streamlit-cloud deployment of the redirect breaks (rare).
+- You want to reference the pre-migration scoring algorithm or UI in `git log`.
+- You're wiring up something that needs the original URL to stay functional during a transition.
 
-### Core Application (app.py)
-Single-file Streamlit application with the main function `optimize_playlist()` that:
-1. Processes CSV data with playlist metrics (likeRate, saveRate, skipRate)
-2. Calculates `discoveryRate = likeRate + saveRate`
-3. Computes `track_score = discoveryRate / skipRate` (with skip rate clamped to avoid division by zero)
-4. Adds percentage formatting for display
-5. Sorts tracks by score descending for optimal playlist ordering
+## What it contains today
 
-### Data Flow
-- User uploads CSV file via Streamlit file uploader
-- CSV is processed by pandas to clean and calculate metrics
-- Results displayed in interactive dataframe
-- Optimized playlist available for download as CSV
+- `app.py` — the redirect stub (a few lines: shows a deprecation notice, links to Snow URL).
+- `requirements.txt` — minimal Streamlit deps for the redirect stub only.
+- `.devcontainer/` — legacy dev container config (probably stale).
+- `docs/` — pre-migration design docs and the migration plan.
 
-### Key Algorithms
-- **Score Calculation**: `track_score = (likeRate + saveRate) / max(skipRate, 0.01)`
-- **Skip Rate Clamping**: Prevents division by zero by setting minimum skip rate to 0.01
-- **Column Reordering**: Places track_score_percentage after track_uri column when present
+## What changed in the migration
 
-## Dependencies
-- **streamlit**: Web app framework
-- **pandas**: Data processing and CSV handling
-- **streamlit-js-eval**: JavaScript evaluation for clipboard access
+The actual scoring logic and UI now live in the Snow SPA. Key differences:
 
-## Key Features
-- **Automatic Clipboard Copy**: Track URIs are automatically copied when CSV is uploaded
-- **Manual Copy Button**: Users can re-copy URIs using the "Copy all track URIs" button
-- **Toast Notifications**: User feedback for copy actions and error states
-- **Error Handling**: Graceful degradation when track_uri column is missing
+- **No Python, no Streamlit, no server-side processing.** The Snow SPA is vanilla HTML/CSS/JS; CSV parsing happens client-side via `FileReader`.
+- **No Okta/Edge Proxy plumbing.** Snow ships with IAP for free.
+- **Deploy is `git push origin master`**, not a Streamlit-cloud upload.
+
+For everything else, go to the Snow SPA repo at `~/Documents/Cursor Projects/playlist-sequencer-snow/`.
